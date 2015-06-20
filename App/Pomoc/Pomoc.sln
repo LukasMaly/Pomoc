@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Pomoc", "Pomoc\Pomoc.shproj", "{0A2F4224-B5FA-40AB-94E8-E1F4F024C13B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pomoc.Droid", "Droid\Pomoc.Droid.csproj", "{95664E49-C826-4934-91B0-AFBD508EA746}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pomoc.UITests", "UITests\Pomoc.UITests.csproj", "{494E2BD5-411A-400F-A910-0AFFA6858F86}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{494E2BD5-411A-400F-A910-0AFFA6858F86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{494E2BD5-411A-400F-A910-0AFFA6858F86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{494E2BD5-411A-400F-A910-0AFFA6858F86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{494E2BD5-411A-400F-A910-0AFFA6858F86}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95664E49-C826-4934-91B0-AFBD508EA746}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95664E49-C826-4934-91B0-AFBD508EA746}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95664E49-C826-4934-91B0-AFBD508EA746}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95664E49-C826-4934-91B0-AFBD508EA746}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

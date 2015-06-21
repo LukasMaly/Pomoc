@@ -5,6 +5,10 @@ using Xamarin.Forms;
 using System.Threading.Tasks;
 using Toasts.Forms.Plugin.Abstractions;
 using System.Timers;
+using System.Net;
+using System.Collections.Specialized;
+using System.Globalization;
+
 
 namespace Pomoc
 {
@@ -54,6 +58,7 @@ namespace Pomoc
 		public int numIntegrated = 112;
 
 		public Label acc;
+		public Label sent;
 		public Functions Func;
 
 		public MainLayout(Functions funcs)
@@ -97,13 +102,19 @@ namespace Pomoc
 				FontSize = 15,
 				Text = "GPS přesnost"
 			};
+
+			sent = new Label {
+				XAlign = TextAlignment.Center,
+				FontSize = 15,
+				Text = "Zpráva o poloze neodeslána"
+			};
 				
 
 			StackLayout stack = new StackLayout
 			{
 				Spacing = 20,
 				VerticalOptions = LayoutOptions.Center,
-				Children = { info, hospital, fire, police, integral, acc}
+				Children = { info, hospital, fire, police, integral, acc, sent}
 			};
 
 			Content = new ScrollView {
@@ -117,6 +128,7 @@ namespace Pomoc
 		private MainLayout layout;
 		private IGeolocator locator;
 		private DateTimeOffset lastTime;
+		private Position myPosition;
 
 		public void setLayout(MainLayout lay)
 		{
@@ -129,13 +141,12 @@ namespace Pomoc
 		public void ButtonClick(int number)
 		{
 			Task<Position> pos = GetLocation ();
-			SendLocation ();
-			//CallNumber (number);
+			Task t = SendLocation ();
+			CallNumber (number);
 		}
 
 		public async Task<Position> GetLocation()
-		{	
-			
+		{		
 
 			Position position = new Position();
 
@@ -148,13 +159,13 @@ namespace Pomoc
 			//position.Altitude, position.AltitudeAccuracy, position.Accuracy, position.Heading, position.Speed)
 
 
-
 			Device.BeginInvokeOnMainThread(() =>
 			{
 					layout.acc.Text =  "GPS přesnost: " + position.Accuracy.ToString () + " m (obnoveno po " + ((position.Timestamp - lastTime).Seconds).ToString() + "s)";								
 				});
 
 			lastTime = position.Timestamp;
+			myPosition = position;
 
 			return position;
 		}
@@ -175,14 +186,28 @@ namespace Pomoc
 			Task<Position> pos = GetLocation ();
 		}
 
-		private void SendLocation()
-		{
+		private async Task SendLocation()
+		{	
+			long epochTicks = new DateTime (1970, 1, 1).Ticks;
+			long unixTime = ((myPosition.Timestamp.UtcTicks - epochTicks) / TimeSpan.TicksPerSecond);
 
+			string url = "http://192.168.0.106:8888/index.php?telephoneNumber='420608802085'&gpsTime='"+ unixTime.ToString() +"'&latitude='"+ myPosition.Latitude.ToString(new CultureInfo("en-US")) + "'&longitude='"+ 
+				myPosition.Longitude.ToString(new CultureInfo("en-US")) +"'&accuracy='" + myPosition.Accuracy.ToString(new CultureInfo("en-US")) + "'"; 
+			string message = "";
 
+			using (WebClient wc = new WebClient())
+			{		
+				string response = await wc.UploadStringTaskAsync(url, message);
+			}
+
+			Device.BeginInvokeOnMainThread(() =>
+			{
+					layout.sent.Text =  "Zpráva o poloze odeslána";								
+			});
 		}
 
 		private void CallNumber(int number)
-		{
+		{			
 			Device.OpenUri (new Uri ("tel:+420" + number.ToString()));
 		}
 

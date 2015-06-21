@@ -23,6 +23,39 @@
 		// echo 'Připojení proběhlo úspěšně ' . $db->host_info . '<br>';
 	?>
 
+	<!-- Parse string to MySQL database -->
+	<?php
+		if (isset($_GET['telephoneNumber'])) {
+
+			$telephoneNumber = $_GET['telephoneNumber'];
+			$gpsTime = $_GET['gpsTime'];
+			$latitude = $_GET['latitude'];
+			$longitude = $_GET['longitude'];
+			$accuracy = $_GET['accuracy'];
+
+			echo $telephoneNumber;
+			echo $gpsTime;
+			echo $latitude;
+			echo $longitude;
+			echo $accuracy;
+
+			if ($db->connect_errno) {
+			    printf("Connect failed: %s\n", $db->connect_error);
+			    exit();
+			}
+
+			$query = "INSERT INTO `entries`(`telephoneNumber`, `gpsTime`, `latitude`, `longitude`, `accuracy`) VALUES ($telephoneNumber, FROM_UNIXTIME($gpsTime), $latitude, $longitude, $accuracy)";
+			// http://localhost:8888/index.php?telephoneNumber='+420123456789'&gpsTime='1434893918'&latitude='49.1947097'&longitude='16.5981503'&accuracy='10'
+
+			$retval = $db->query($query);
+			if(!$retval)
+			{
+				die('Could not enter data: ' . $db->error);
+			}
+			echo "Entered data successfully\n";
+		}
+	?>
+
 	<!-- Define functions for interactions with Map and Panorama elements -->
 	<script src="http://maps.googleapis.com/maps/api/js"></script>
 	<script>
@@ -176,11 +209,11 @@
 						echo '<td>';
 						echo '<a href="javascript:void(0)" onclick="singleLoc(' . 
 							$entry['latitude'] . ', ' . 
-							$entry['longitude']  . ', ' . 
+							$entry['longitude'] . ', ' . 
 							$entry['accuracy'] . ', ' . 
 							"'" . $entry['telephoneNumber'] . "'" .', ' . 
 							"'" . $entry['gpsTime'] . "'" .');">' . 
-							$entry['gpsTime'] .  ', ' . $entry['telephoneNumber'] . '</a>';
+							$entry['gpsTime'] . ', ' . $entry['telephoneNumber'] . '</a>';
 						echo '</td>';
 						echo '</tr>';
 					}
@@ -192,7 +225,7 @@
 					//$db->close();
 				?>
 			</table>
-  		</td>
+		</td>
 	</tr>
 </table>
 
